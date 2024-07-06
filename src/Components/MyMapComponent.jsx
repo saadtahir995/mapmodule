@@ -15,6 +15,7 @@ const MyMapComponent = () => {
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   React.useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
+      console.log(position);
       setCenter({
         lat: position.coords.latitude,
         lng: position.coords.longitude
