@@ -10,7 +10,7 @@ const containerStyle = {
 
 const MyMapComponent = () => {
 
-const apiKey = 'AIzaSyD7lpMaGVdeGSt-aHGo51TEPclkoWatMGg'; // Replace with your Google Maps API key
+  const apiKey = import.meta.env.VITE_API_KEY;
   const [selected, setSelected] = React.useState(null);
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   React.useEffect(() => {
