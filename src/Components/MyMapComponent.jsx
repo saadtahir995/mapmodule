@@ -1,5 +1,5 @@
 import React from 'react';
-import { GoogleMap, LoadScript,InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, LoadScript,MarkerF } from '@react-google-maps/api';
 import {useState} from 'react';
 
 
@@ -9,18 +9,24 @@ const containerStyle = {
 };
 
 const MyMapComponent = () => {
-
   const apiKey = import.meta.env.VITE_API_KEY;
-  const [selected, setSelected] = React.useState(null);
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   React.useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      console.log(position);
-      setCenter({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      });
-    });
+    async function getGeolocation(apiKey) {
+      const url = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`
+    ;
+      try {
+        const response = await fetch(url, {
+          method: 'POST'
+        });
+        const data = await response.json();
+        const location = data.location;
+        setCenter({ lat: location.lat, lng: location.lng });
+      } catch (error) {
+        console.error('Error fetching geolocation:', error);
+      }
+    }
+    getGeolocation(apiKey);
   }, []);
 
   return (
@@ -28,23 +34,10 @@ const MyMapComponent = () => {
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={10}
-
-
-      >
-
-        
-        {selected && (
-          <InfoWindow
-            position={center}
-            onCloseClick={() => setSelected(null)}
-          >
-            <div>
-              <h2>Marker Info</h2>
-              <p>This is the info window content</p>
-            </div>
-          </InfoWindow>
-        )}
+        zoom={10}>
+        <MarkerF
+          position={center}
+        />
       </GoogleMap>
     </LoadScript>
   );
