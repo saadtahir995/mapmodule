@@ -1,6 +1,8 @@
 import React from 'react';
 import { GoogleMap, LoadScript,MarkerF } from '@react-google-maps/api';
+import io from 'socket.io-client';
 import {useState} from 'react';
+const socket = io('http://192.168.10.15:3000');
 
 
 const containerStyle = {
@@ -22,6 +24,17 @@ const MyMapComponent = () => {
         const data = await response.json();
         const location = data.location;
         setCenter({ lat: location.lat, lng: location.lng });
+        socket.emit('locationUpdate', { lat: location.lat, lng: location.lng });
+        socket.on('locationUpdate', (data) => {
+          console.log('Location data received:', data);
+          setCenter({ lat: data.lat, lng: data.lng });
+
+
+
+          
+
+        });
+
       } catch (error) {
         console.error('Error fetching geolocation:', error);
       }
